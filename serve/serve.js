@@ -26,6 +26,6 @@ mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: tru
     console.log('base de datos cargada');
 });
 
-app.listen(3000, () => {
-    console.log('Escuchando en el puerto:', process.env.PORT);
+app.listen(process.env.PORT), () => {
+console.log('Escuchando en el puerto:', process.env.PORT);
 })
