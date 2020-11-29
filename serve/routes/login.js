@@ -7,14 +7,14 @@ const Usuario = require('../models/usuario')
 
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
+const { checkErr } = require('../otherServerFuncts/uploadFuncts')
+
 
 app.post('/login', (req, res) => {
     let body = req.body
 
     Usuario.findOne({ email: body.email }, (err, usuariodb) => {
-        if (err) {
-            return res.status(500).json({ ok: false, err })
-        }
+        checkErr(res, err)
 
         if (!usuariodb) {
             return res.status(400).json({
@@ -83,9 +83,7 @@ app.post('/google', async(req, res) => {
         })
 
     Usuario.findOne({ email: googleUser.email }, (err, usuariodb) => {
-        if (err) {
-            return res.status(500).json({ ok: false, err })
-        }
+        checkErr(res, err)
 
         if (usuariodb) {
             if (usuariodb.google === false) {

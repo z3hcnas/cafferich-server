@@ -5,6 +5,7 @@ const Categoria = require('../models/categoria')
 
 const { verificaToken, verificaAdmin_Role } = require('../middelwares/authentication');
 const categoria = require('../models/categoria');
+const { checkErr } = require('../otherServerFuncts/uploadFuncts')
 
 
 
@@ -13,12 +14,7 @@ app.get('/categorias', verificaToken, (req, res) => {
         .sort('descripcion')
         .populate('usuario', 'nombre email')
         .exec((err, categorias) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    err
-                })
-            }
+            checkErr(res, err)
 
             res.json({
                 ok: true,
@@ -31,12 +27,7 @@ app.get('/categorias', verificaToken, (req, res) => {
 app.get('/categoria/:id', verificaToken, (req, res) => {
     let categoryId = req.params.id
     Categoria.findById(categoryId, (err, categorydb) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            })
-        }
+        checkErr(res, err)
         if (categorydb === null) {
             return res.status(400).json({
                 ok: false,
@@ -59,12 +50,7 @@ app.post('/categoria', verificaToken, (req, res) => {
         usuario: req.usuario._id
     })
     category.save((err, categorydb) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            })
-        }
+        checkErr(res, err)
 
         if (!categorydb) {
             return res.status(400).json({
@@ -84,12 +70,7 @@ app.post('/categoria', verificaToken, (req, res) => {
 app.delete('/categoria/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     let categoryId = req.params.id
     Categoria.findByIdAndDelete(categoryId, (err, categoryDeleted) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            })
-        }
+        checkErr(res, err)
 
         if (categoryDeleted === null) {
             return res.status(400).json({
@@ -111,12 +92,7 @@ app.put('/categoria/:id', verificaToken, (req, res) => {
     let newDescription = req.params.descripcion
 
     categoria.findByIdAndUpdate(categoryId, newDescription, (err, categoryUpdated) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            })
-        }
+        checkErr(res, err)
 
         if (categoryUpdated === null) {
             return res.status(400).json({
